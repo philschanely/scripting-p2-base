@@ -6,7 +6,7 @@
   // Run button configuration
   "commands": {
     "Node version": "node --version",
-    "Install data": "mysql < task_db.sql",
+    "Install data": "mysql < api/task_db.sql",
     "Sync API": "git pull origin student-base"
   },
 
