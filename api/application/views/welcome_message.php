@@ -5,8 +5,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <head>
 	<meta charset="utf-8">
 	<title>CI-Service Test Page</title>
-	<link type="text/css" rel="stylesheet" href="../css/styles.bootswatch.css" />
-  <link type="text/css" rel="stylesheet" href="../css/styles.overrides.css" />
+	<link type="text/css" rel="stylesheet" href="https://bootswatch.com/3/cosmo/bootstrap.min.css" />
+  <!-- <link type="text/css" rel="stylesheet" href="../css/styles.overrides.css" /> -->
 </head>
 <body class="container-fluid">
 	<h1>Task Manager</h1>

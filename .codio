@@ -1,6 +1,8 @@
 {
   // Configure your Run and Preview buttons here.
 
+  // git remote add origin https://github.com/philschanely/scripting-p2-base.git
+
   // Run button configuration
   "commands": {
     "Node version": "node --version",
