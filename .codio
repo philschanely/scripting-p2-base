@@ -1,0 +1,15 @@
+{
+  // Configure your Run and Preview buttons here.
+
+  // Run button configuration
+  "commands": {
+    "Node version": "node --version",
+    "Install data": "mysql task_db < task-data.sql"
+  },
+
+  // Preview button configuration
+  "preview": {
+    "Project Index": "http://{{domain3000}}/",
+    "API Reference": "https://{{domain3000}}/api/"
+  }
+}

@@ -114,7 +114,23 @@ You should have a full roundtrip navigation now, even though it doesn't actually
 
 # Processing Login
 
-Coming soon.
+Now we get to dive into some deeper code in order to make our login script function properly. We'll modify the `processLogin()` function to collect the email and password provided by the user, send them to the API, and check see if what was provided is valid. If so, we'll allow the user into the application and store their user information for user later. If not we'll keep them on the login page but reveal feedback that the credentials they provided were invalid.
+
+So recall that `processLogin()` is called as the event handler when a user submits the login form. Right now it just sends us right on to `showMainPage()` so we'll need to pull that out and write our actual script.
+
+First, ensure an event object `e` is passed in as a parameter in `processLogin()`. Ensure that you prevent the default behavior of the event with `e.preventDefault()`. Then convert `e.target` to a jQuery object and store it in a variable. Pass that variable into `serializeData()` and assign the result to a new variable. In summary, this takes the submitted form (`e.target`) and passes it into a function (`serializeData()`) that retrieves the data submitted in that form as an object where the properties and values match the form `name` attribute and values provided. Log the result to the console to confirm that whatever email address and/or password you enter is output in a `email` and `password` property on this object. Remove this log when confirmed.
+
+Now in theory we're ready to send this data to our authentication service. However, it is a *MAJOR* security risk to send or store a password in plain text as it was entered by the user. So before we send it off we need to first convert it to an encrypted form. So redefine the data's `password` property and as the new value assign the result of calling `md5()` and passing in the current value of the password. Something like this (depending on the `data` variable you've defined):
+
+```js
+formData.password = md5(formData.password);
+```
+
+If you log this to the console now you should see an encrypted password that is much safer to send.
+
+So now lets call our API's `auth_user` endpoint. See the documentation for this from the preview dropdown and copy the GET request code provided. Paste it inside `processLogin()`. Where the provided code has the `filter` property and assigns an object to it, replace that whole object with your data variable that you assigned earlier when you called `serializeData()`. This way you pass the provided email and password to the API as a GET request. Inside anonymous function assigned to the `success` property redefine the `data` parameter to be the result of `$.parseJSON(data)`.
+
+Now log `data` to the console to see the result from the server. A default user with email `phil@example.com` and password, `password` is provided, so if you enter these credentials you should see a valid user returned. Any other credentials at this point should return an invalid user object.  
 
 # Processing Signup
 
