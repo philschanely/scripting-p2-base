@@ -148,7 +148,7 @@ Now lets get things set up so users can create new accounts beyond our default p
 * text input fields with `name` attributes that match the corresponding field names for users: `name`, `email`.
 * two password type input fields. One should have a `name` of `password` and the other must be different but logical such as `passwordConfirm`.
 
-We'll want to set up a listener to respond to submit actions on the form here, so ensure you can select that form specifically such as a unique `id` or unique `class`.
+More coming soon.
 
 # Loading Tasks and Categories
 
