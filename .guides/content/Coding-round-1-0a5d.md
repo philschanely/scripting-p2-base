@@ -108,7 +108,10 @@ Next add an event listener listening for a submit even on your signup form and c
 
 Finally, add one more event listener that listens for clicks on the logout link in your main page and calls `processLogout` as a result.
 
-Because we have a little extra code we'll include in the long run when users sign up, log in, and out we need these declared as separate functions from the page loading functions we've already defined. So define them alphabetically amidst the other functions. In `processLogin()` just call `showMainPage()` for now; in `processSignup()` also just call `showMainPage()`; and in `processLogout()` just call `shodLoginPage()`.
+Because we have a little extra code we'll include in the long run when users sign up, log in, and out we need these declared as separate functions from the page loading functions we've already defined. So define them alphabetically amidst the other functions.
+
+* In `processLogin()` and `processSignup()` allow `e` to be passed in as a parameter and inside them call `e.preventDefault()`. Then just call `showMainPage()` for now as both should eventually take the user to the main page.
+* In `processLogout()` just call `showLoginPage()`.
 
 You should have a full roundtrip navigation now, even though it doesn't actually authenticate a user or create a new user.
 
@@ -120,7 +123,13 @@ So recall that `processLogin()` is called as the event handler when a user submi
 
 First, ensure an event object `e` is passed in as a parameter in `processLogin()`. Ensure that you prevent the default behavior of the event with `e.preventDefault()`. Then convert `e.target` to a jQuery object and store it in a variable. Pass that variable into `serializeData()` and assign the result to a new variable. In summary, this takes the submitted form (`e.target`) and passes it into a function (`serializeData()`) that retrieves the data submitted in that form as an object where the properties and values match the form `name` attribute and values provided. Log the result to the console to confirm that whatever email address and/or password you enter is output in a `email` and `password` property on this object. Remove this log when confirmed.
 
-Now in theory we're ready to send this data to our authentication service. However, it is a *MAJOR* security risk to send or store a password in plain text as it was entered by the user. So before we send it off we need to first convert it to an encrypted form. So redefine the data's `password` property and as the new value assign the result of calling `md5()` and passing in the current value of the password. Something like this (depending on the `data` variable you've defined):
+Now in theory we're ready to send this data to our authentication service. However, it is a *MAJOR* security risk to send or store a password in plain text as it was entered by the user. So before we send it off we need to first convert it to an encrypted form.
+
+**You need to add the following `md5` library file using a `script` tag in your `index.html` file in order to proceed:**
+
+`https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.10.0/js/md5.min.js`
+
+So redefine the data's `password` property and as the new value assign the result of calling `md5()` and passing in the current value of the password. Something like this (depending on the `data` variable you've defined):
 
 ```js
 formData.password = md5(formData.password);
@@ -130,11 +139,16 @@ If you log this to the console now you should see an encrypted password that is 
 
 So now lets call our API's `auth_user` endpoint. See the documentation for this from the preview dropdown and copy the GET request code provided. Paste it inside `processLogin()`. Where the provided code has the `filter` property and assigns an object to it, replace that whole object with your data variable that you assigned earlier when you called `serializeData()`. This way you pass the provided email and password to the API as a GET request. Inside anonymous function assigned to the `success` property redefine the `data` parameter to be the result of `$.parseJSON(data)`.
 
-Now log `data` to the console to see the result from the server. A default user with email `phil@example.com` and password, `password` is provided, so if you enter these credentials you should see a valid user returned. Any other credentials at this point should return an invalid user object.  
+Now log new `data` value to the console to see the result from the server. A default user with email `phil@example.com` and password, `password` is provided, so if you enter these credentials you should see a valid user returned. Any other credentials at this point should return an invalid user object.  
 
 # Processing Signup
 
-Coming soon.
+Now lets get things set up so users can create new accounts beyond our default provided accounts. First ensure that you have precisely the following in your signup page's form:
+
+* text input fields with `name` attributes that match the corresponding field names for users: `name`, `email`.
+* two password type input fields. One should have a `name` of `password` and the other must be different but logical such as `passwordConfirm`.
+
+We'll want to set up a listener to respond to submit actions on the form here, so ensure you can select that form specifically such as a unique `id` or unique `class`.
 
 # Loading Tasks and Categories
 

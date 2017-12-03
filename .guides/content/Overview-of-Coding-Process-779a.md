@@ -44,5 +44,15 @@ First you must ensure the following is set up for each of your templates:
   * markup and classes that enable it to hide and reveal when needed. See your textbook or the bootstrap library as examples of how you could do this if needed. This should include either a close or cancel button that will dismiss the modal.
   * a form that allows the user to provide or edit the name of the category and a hidden field to hold the category's id. Listeners will respond when this form is submitted and process the new category or updates to a category and close the modal.
 * Your edit task modal should have:
-  * modal markup as mentioned in the previous main bullet. 
+  * modal markup as mentioned in the previous main bullet.
   * a form that allows the user to provide or edit the task's description, due date, task type (drop down or radio buttons), category (drop down), and a hidden field to hold the task id. Listeners will respond when the form is submitted to process the new task or updates to the task and close the modal.
+
+
+# Dependency Setup
+
+You must also be sure that you have successfully loaded the following JavaScript libraries:
+
+* jQuery
+* Handlebars
+
+Any others we need we'll add as we go.
