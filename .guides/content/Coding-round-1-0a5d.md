@@ -137,9 +137,17 @@ formData.password = md5(formData.password);
 
 If you log this to the console now you should see an encrypted password that is much safer to send.
 
+Its time to send our first call to our application's API. In order to help make these calls a little more efficient, define a **global** variable called `api` (up where you declared your global template variables outside of any functions or the DRE) and assign to it `"/api/index.php/"` which is the path to the API root. This variable is used in all the API endpoint calls as you can see on the API Reference link provided in the Codio Toolbar.
+
 So now lets call our API's `auth_user` endpoint. See the documentation for this from the preview dropdown and copy the GET request code provided. Paste it inside `processLogin()`. Where the provided code has the `filter` property and assigns an object to it, replace that whole object with your data variable that you assigned earlier when you called `serializeData()`. This way you pass the provided email and password to the API as a GET request. Inside anonymous function assigned to the `success` property redefine the `data` parameter to be the result of `$.parseJSON(data)`.
 
-Now log new `data` value to the console to see the result from the server. A default user with email `phil@example.com` and password, `password` is provided, so if you enter these credentials you should see a valid user returned. Any other credentials at this point should return an invalid user object.  
+Now log new `data` value to the console to see the result from the server. A default user with email `phil@example.com` and password, `password` is provided, so if you enter these credentials you should see a valid user returned. Any other credentials at this point should return an invalid user object.
+
+So now we can check to see if the provided user is a valid one. Add a conditional statement that checks to see if `data.authenticated` is `true`. If it is then call `showMainPage()`. Otherwise, select and display an element in your login form that shows feedback to the user to try again with valid credentials.
+
+Test the application now and you should find you can log in with the demo account provided but not with any other credentials.
+
+Before we move on lets also store our user info for future reference in the application. Declare a **global** variable called `currentUser`. Then inside `processLogin()` in the conditional statement you created just a moment ago, before you called `showMainPage()` `assign data.user` to `currentUser`.
 
 # Processing Signup
 
