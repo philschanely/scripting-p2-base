@@ -156,7 +156,47 @@ Now lets get things set up so users can create new accounts beyond our default p
 * text input fields with `name` attributes that match the corresponding field names for users: `name`, `email`.
 * two password type input fields. One should have a `name` of `password` and the other must be different but logical such as `passwordConfirm`.
 
-More coming soon.
+You should have a simple start to the event handler listening for this form to be submitted, the `processSignup()` function. We just need to do two things: validate the data and send it to the API. But first we need to serialize the data in the form. Follow what you did earlier with the login form: Inside `processSignup()` after you've called `e.preventDefault()` convert `e.target` into a jQuery object and pass it into `serializeData()`. Store the resulting data object in a variable you can use later. Log this variable to check that it is indeed working correctly; you should see an object with the values you put into the form associated with the `name` attributes you gave the form fields. Remove the log when done testing.
+
+Also remove the call to `showMainPage()` that you should have in `processSignup()`. We'll put it back later in a better spot.
+
+## Validating Signup Data
+
+Validating our signup data is pretty straight froward. First, let's ensure that they actually provided a name. Simply add a contitional statement like this:
+
+```js
+if (formData.name.length < 1) {
+  // Show feedback...
+  return false;
+}
+```
+
+This looks at the length of the value stored in your form's `name` item. If it is less than one character then the user didn't provide any name. You should replace the comment here with some code that selects your feedback element in the signup form and provides some relevant feedback such as "Please provide a name for yourself." The `return false` line tells JavaScript to exit the function without proceeding further.
+
+Next we need to ensure that the email address the user provided is valid. There are all kinds of ways they can goof up an email address in terms of normal typos. But it is also possible that they provide content that is not actually an email address. A topic we have not covered is that of regular expressions, which is a code system for searching for patterns within strings. Such a code can be used to validate that a provided string is or is not a valid email address. So enter this function alphabetically amidst your other functions:
+
+```js
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+```
+
+And just trust that if you pass an `email` string into this function you get back `true` if its a valid email address and `false` if not.
+
+So now inside `processSignup()` after the first validation condition you added moments ago add a call to a `validateEmail()`. Pass in your form data's `email` property and assign the result of the function call to a variable such as `isEmailValid`:
+
+```js
+var isEmailValid = validateEmail(formData.email);
+```
+
+Next add a conditional statement: If the email address is not valid (`isEmailValid` is equal to `false`) then select your feedback element in the signup page and provide feedback that the email address is not valid. Then `return false` to exit the `processSignup()` function without proceeding further. So if the provided email address is invalid the user will see feedback to make an adjustment. Otherwise we'll continue with the next validation.
+
+Now we need to compare the two passwords the user provided to ensure they entered the same one twice as a check for their sake--I'm sure that you're familiar with this convention. So here we need a conditional statement where we check to see if the two password values are not equal to each other. If they are not equal to each other then we show relevant feedback for them to correct the error and again `return false` to exit `processSignup()`.
+
+Now if all three of these validations pass we know the user's data is all ready to send to our API!
+
+*More coming soon!*
 
 # Loading Tasks and Categories
 
