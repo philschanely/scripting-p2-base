@@ -194,10 +194,30 @@ Next add a conditional statement: If the email address is not valid (`isEmailVal
 
 Now we need to compare the two passwords the user provided to ensure they entered the same one twice as a check for their sake--I'm sure that you're familiar with this convention. So here we need a conditional statement where we check to see if the two password values are not equal to each other. If they are not equal to each other then we show relevant feedback for them to correct the error and again `return false` to exit `processSignup()`.
 
-Now if all three of these validations pass we know the user's data is all ready to send to our API!
+Now if all three of these validations pass we know the user's data is all ready to send to our API! See the API Reference for the User endpoint and copy the provided code for POST ing new users. Paste it in `processSignup` after your last validation condition. THis provided code makes the POST call to the user endpoint and sends data for the new user including the name, email, and password. We need to update these values to include the actual data from our form. So modify the values assigned to each property something like this:
 
-*More coming soon!*
+```js
+data: {
+  "name": formData.name,
+  "email": formData.email,
+  "password": md5(formData.password)
+},
+```
+
+Make sure you use the correct variable for the form data based on what you got back from your call to `serializeData`. Also make sure you encrypt the password the user provided by passing it into `md5()`.
+
+Now for the success function convert `data` to JSON using `$.parseJSON` as you have before. Log the result to ensure you have a valid user object. Further validating the new user again would be wise, but we'll keep things simple and rely on our API to have done this. So now redefine your global `currentUser` variable to be the `data` you got back from the service. Then call `showMainPage()`.
+
+Testing the result now should ensure that you can create a new user and log right in. If you log out you should be able to log back in with that new user's credentials in the main login form.
+
+Note that along the way you might have added a number of users into the database. If you send me (your professor) the id number for the one user you want to keep in the system I will clean up the additional undesired user entries.
 
 # Loading Tasks and Categories
 
-Coming soon.
+Now finally we get to load the tasks and categories for the user who is currently logged in. Generally this will involve:
+
+* Sending a call to the API endpoint for category and task and passing the current user's id as the `owner` filter.
+* Responding to the results by injecting the returned data into the appropriate template.
+* Displaying that template on the page.
+
+***More coming soon!***
