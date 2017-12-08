@@ -220,4 +220,4 @@ Now finally we get to load the tasks and categories for the user who is currentl
 * Responding to the results by injecting the returned data into the appropriate template.
 * Displaying that template on the page.
 
-***More coming soon!***
+***We'll dive into this in Coding Round 2!***

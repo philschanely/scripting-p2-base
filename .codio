@@ -1,10 +1,13 @@
 {
   // Configure your Run and Preview buttons here.
 
+  // git remote add origin https://github.com/philschanely/scripting-p2-base.git
+
   // Run button configuration
   "commands": {
     "Node version": "node --version",
-    "Install data": "mysql task_db < task-data.sql"
+    "Install data": "mysql < api/task_db.sql",
+    "Sync API": "git pull origin student-base"
   },
 
   // Preview button configuration
