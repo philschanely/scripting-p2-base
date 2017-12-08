@@ -12,14 +12,20 @@ class User extends CI_Controller {
     public function index($_key='all')
     {
         $result = $this->user_model->route($_key);
-        if (is_array($result)) {
-            foreach ($result as &$user) {
-                unset($user->password);
-            }
-        } elseif (is_object($result)) {
-            unset($result->password);
+        $auth = (object) array(
+            'authenticated' => false,
+            'user' => NULL
+        );
+        if (isset($result->users) && !empty($result->users)) {
+            $auth->authenticated = true;
+            $auth->user = $result->users[0];
+            unset($auth->user->password);
+        } elseif (is_object($result) && !empty($result->id)) {
+            $auth->authenticated = true;
+            $auth->user = $result;
+            unset($auth->user->password);
         }
-        echo json_encode($result);
+        echo json_encode($auth);
     }
 
 }
