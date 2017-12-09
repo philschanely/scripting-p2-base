@@ -133,7 +133,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     category: 3,
     taskType: 1,
     status: 0
-  }
+  },
   success: function(data) {
     // Stuff with response...
   }
@@ -143,7 +143,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   type: "GET",
   data: {
     filter: "category=2"
-  }
+  },
   success: function(data) {
     // Stuff with response...
   }
@@ -161,7 +161,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     category: 3,
     taskType: 3,
     status: 0
-  }
+  },
   success: function(data) {
     // Stuff with response...
   }
