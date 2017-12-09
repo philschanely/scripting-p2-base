@@ -57,6 +57,3 @@ Now you should see the category list appear on the page. Debug as necessary.
 ## Filtering to a Specific Category
 
 **Coming soon!**
-
-
-// TODO: Check that all API reference documentation has correct commas.
