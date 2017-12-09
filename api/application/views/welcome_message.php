@@ -5,8 +5,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <head>
 	<meta charset="utf-8">
 	<title>CI-Service Test Page</title>
-	<link type="text/css" rel="stylesheet" href="../css/styles.bootswatch.css" />
-  <link type="text/css" rel="stylesheet" href="../css/styles.overrides.css" />
+	<link type="text/css" rel="stylesheet" href="https://bootswatch.com/3/cosmo/bootstrap.min.css" />
+  <!-- <link type="text/css" rel="stylesheet" href="../css/styles.overrides.css" /> -->
 </head>
 <body class="container-fluid">
 	<h1>Task Manager</h1>
@@ -133,7 +133,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     category: 3,
     taskType: 1,
     status: 0
-  }
+  },
   success: function(data) {
     // Stuff with response...
   }
@@ -143,7 +143,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   type: "GET",
   data: {
     filter: "category=2"
-  }
+  },
   success: function(data) {
     // Stuff with response...
   }
@@ -161,7 +161,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     category: 3,
     taskType: 3,
     status: 0
-  }
+  },
   success: function(data) {
     // Stuff with response...
   }
