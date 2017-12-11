@@ -209,10 +209,25 @@ Inside `deleteCategory()` see the API Reference, find the code snipper for delet
 
 # Adding and Editing Tasks
 
-**Coming soon!**
+While a lot of what we do with adding and editing tasks will be very similar to what we did with categories, there are a few key differences:
+
+* perhaps it goes without saying, but the structure of a task is a little more complicated than the structure of a category :)
+* part of the ability to edit a task involves being able to select aspects of the task from other data in our application:
+  * tasks can be organized into categories; so it might be helpful for us to have a global variable that is storing the current list of categories and is updated any time we reload the category list. We can then use such a variable when populating the dropdown of categories in the task editor.
+  * tasks can be assigned one of several task types; these never change so we can simply load these at the start of the application and store them in a global variable for any time we need them.
+
+Let's handle storing tasks first. Declare a global variable at the top of your document amidst the other global variables you have. Name it simple `categories` as long as this does not conflict with other variables you have in your application. Then, inside `getCategories()`, inside the success function, after you convert the incoming `data` with `$.parseJSON()` simply assign that data to your new global categories variable. Done.
+
+Next let's ensure that task types load when the the application loads. Declare another global variable called `taskTypes`. Then create a new function amidst your other functions called `getTaskTypes()`. Inside this paste the GET request in the API Reference in order to GET a list of all task types. In the success function simply convert the incoming `data` with `$.parseJSON()` and then assign it to your `taskTypes` variable. Done. We're on a roll.
+
+Next we'll enable our edit task modal and load in the data for the task the user clicked.
+
+**More coming soon!**
 
 # Marking Tasks as Complete
 
 **Coming soon!**
 
 # Deleting Tasks
+
+**More coming soon!**
