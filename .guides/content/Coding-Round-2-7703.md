@@ -102,11 +102,110 @@ Test the results and you should be able to toggle between seeing all tasks and o
 
 # Adding and Editing Categories
 
-**Coming soon!**
+Now we need to enable the user to add and edit categories. Both of these actions will use the same form that should be prepared as a modal "window" that will appear over the current page. I like to simply use Bootstrap's modal for this, but you might have other methods in mind. The key is that you have a simple class to change or function to call such as bootstrap's `.modal('show')` or `.modal('hide')` in order to the desired modal on or off.
+
+Let's tackle the editing side first. Here's the overview:
+
+* We'll have a listener set up for clicks on the edit buttons of each category. In response to the event we'll load the category's data from the API and inject it into the modal template then add the template to the page and activate it.
+* Users will make the desired changes to the category and save or cancel. If they cancel we won't make any changes. Otherwise, we'll be listening for the form to be submitted, and when it is we'll send the modified data off to the API using a PUT call and close the modal.
+* When the data saves successfully we'll also find the corresponding category on the page and reload it with the updated data.
+
+Now double-check that your edit category form includes the following:
+
+* Text input fields for the name of the category.
+* Hidden fields (`<input />` with `type` set to `hidden`) for the `owner` and `id` properties.
+* A submit button (`type` set to `submit`) that is *inside* your form.
+* A unique selector on the form so you can listen for submit events on it.
+
+Here we go. First we need an event listener for click events on the edit category buttons. In response we'll call `editCategory()`.
+
+Set up the definition for `editCategory()` amidst the other functions you have so far. Pass in `e` and prevent the default behavior.
+
+Since we clicked on an edit category button we need to find out the id for the category that was clicked. Convert `e.target` to a jQuery object and traverse up to the closest `.category` (assuming you're following the suggested markup for category items). Then read the `data-id` attribute and store in a variable such as `categoryId`.
+
+Now we'll use this category id to make a GET request to the category endpoint of our API. Open the API reference, find the provided sample to GET a specific category. Copy and paste that into your `editCategory()` function. This GET request is simpler than others we've made so far. The one thing you need to ensure is that your category id variable is used in this code snippet; `categoryID` is concatenated after `"category/"` by default but you should ensure this matches your actual variable.
+
+Now in the response function in place of `// Response script` let's redefine the incoming `data` to be the `$.parseJSON()` form of that data and then log it. You should see the category details for the one you've clicked to edit. Debug as needed otherwise.
+
+Let's take that data and inject it into the template you preloaded for the edit category modal. Remember that should be a global variable in which you later store a compiled Handlebars template. So call that compiled template variable and inject the `data` into it. Store the HTML result in a variable. Then select `body` and append that modal HTML to it. Finally, select the modal with jQuery and turn it on by adding the appropriate class or like this (if you're using Bootstrap and have a modal with an `id` of `edit-category`):
+
+```js
+$('#edit-category').modal('show');
+```
+
+So we should see the modal appear displaying the category we selected so that we can make any changes we want to the name. Inspect the browser code as well to ensure that the `owner` and `id` values are populating in the hidden fields as well.
+
+Now we need to listen for submit events on edit category form. So in `initializeEventHandlers()` add a new listener for submit events on the edit category form itself. IN response call `saveCategory()`. Then define `saveCategory()` amidst your other functions. As before, pass in `e` and prevent the default behavior.
+
+Since the user might just be calling up this modal for a second or third time we should also select any existing one and remove it from the DOM. So make sure your modal template as a whole can be easily selected and removed. Then add the code you need to accomplish this.
+
+Convert `e.target` to a jQuery object and pass it into `serializeData()`. Store the resulting form data in a variable. Log that serialized data to the console to ensure it contains the full category data set including the `id`, the `owner` and the `name`. Debug as needed.
+
+Next store specifically the `id` property in a new variable called `categoryID`.
+
+Let's send this data off to our Category endpoint for the API using a PUT request.
+
+Find the provided snippet for this from the API Reference page and paste it into `saveCategory()`. But where the snippet provided samples of the data to send:
+
+```js
+data: {
+  name: "My Amazing List"
+},
+```
+
+You can instead just assign your serialized form data variable to `data`:
+
+```js
+data: formData,
+```
+
+(Your variable might be named differently and don't forget to include the `,` comma).
+
+Then in the success function convert `data` using `$.parseJSON()` and log the result to the console. If everything is successful you should see the changed category data. Now we just need to re-inject this changed data into the category template and replace the old one on the page with the new one.
+
+So next inside the success function call your single category template global variable you compiled earlier and inject the `data` into it; store the resulting HTML snippet in a variable.
+
+Next we need to replace the changed item in the category list. However, because our edits to this category could have changed where it should be placed in the list, we should simply reload the whole list. Good news! You already have a function that does that. Just call `getCategories()`. Then turn off your modal by revising the classes on the modal or by calling a utility function (such as `.modal('hide')` if you're using Bootstrap).
+
+If you test your code now you should be able to successfully select, edit, and save changes to a category. The changes should appear after you save them but not when you just close your modal window. I've used Bootstrap which comes with built-in functionality for closing modals. But you might need to add one or more event listeners to handle closing your modal through the cancel button or otherwise.
+
+Now for adding new categories. Our structure here will be similar to what we did for editing a category. First add an event listener for clicks on your add category button. In response call `addCategory()`. Then define that function, pass in `e` and prevent the default behavior.
+Since we also might have an edit category modal from a previous time opening it lets select it and remove it just in case (as we did for editing a category).
+
+Now we'll prepare a new category rather than loading one from the API. So define a variable to hold a new empty category and assign to it an object, something like this:
+
+```js
+var newCategory = {
+  id: 0,
+  name: '',
+  owner: currentUser.id
+};
+```
+
+We've given it an `id` of 0, and empty string for the `name` and assigned the current user's `id` as the `owner`. Log your newCategory to check that each of these turns out as expected.
+
+Next we can create a new variable to hold the HTML snippet returned by a call to your global edit category template you compiled earlier and passing in the category you just created. Then select `body` and append this snippet to it. Finally, turn on the edit category modal just as you
+did earlier. Test the results and you should see your edit category modal appear when you click to add a new category, but it should not have any category name in the box, and if you inspect the code you should see the category's `id` field set to `0` and the `owner` field set to the current user's `id`.
+
+In order to save this new category we'll need to modify `saveCategory()`, since it is already set up as the event handler for when the edit category form is submitted. Our first few lines there are still fine: we prevent the default behavior and serialize the form data. And we store the category id in a variable.
+
+But after that we need to determine whether we are editing an existing task and thus need to send a PUT request (that's what we're assuming in our code at this point) versus adding a new task that we need to send using a POST request (that's the new part we need to add). To keep things simple and modular let's allow these two different paths to be defined in two new functions. Grab the `$.ajax()` request you have as the remainder of `saveCategory()` and copy it. Cut it and paste it into a new function called `updateCategory()`. Allow a `data` variable to be passed into this new function. Then paste your code inside it. Update the code so that the data variable you're passing in the request's `data` property is `data` if it isn't already. Also replace `categoryID` with `data.id`.
+
+Back in `saveCategory()` lets add a conditional statement. If the form data's `id` property is greater than 0 we can call `updateCategory()` and pass in our form data. Otherwise, call a new function `createCategory()` and pass the form data in.
+
+Now define the `createCategory()` function. Allow `data` to be passed in. See the API reference for how to send a POST request to POST a new category and copy the provided code snippet. Where this snippet provides sample `name` and `owner` values you should instead assign these `data.name` and `data.owner` respectively to ensure your actual form data is sent to the request. We don't send an `id` since the database will automatically generate one for our new category.
+
+Inside the success function we can do all the same steps we do in our `updateCategory()`'s success function. Simply reload the category list and close your edit category modal.
+
+Test things out and you should successfully add a new category!
 
 # Deleting Categories
 
-**Coming soon!**
+Deleting categories should be pretty straightforward. Wherever you have planned to put a delete category button just add an event listener to it and call a `deleteCategory()` function in response. As you define that function pass in `e` and prevent the default behavior. You should consider how to find the intended category id for the category you intend to delete. If you placed such a button in the category item using a structure like what was proposed earlier here you can traverse up to the closest category and read the `data-id` attribute. Otherwise you'll need to do something else... it will vary depending on your structure.
+
+Inside `deleteCategory()` see the API Reference, find the code snipper for deleting a category, and paste it into your function. make sure that your category id variable matches the one being passed in to the `DELETE` call. Then in the success function simply call `getCategories()` to reload your category list where you should now see the category you selected has been deleted.
+
+**NOTE:** This leaves out an important step of verify the deletion to help the user avoid an accidental deletion. Feel free to refer to previous exercises if you'd like models for how to add this in.
 
 # Adding and Editing Tasks
 
