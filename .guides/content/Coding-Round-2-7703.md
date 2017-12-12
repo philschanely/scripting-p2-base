@@ -54,6 +54,60 @@ We'll now repeat this same process for the category list inside of `getCategorie
 
 Now you should see the category list appear on the page. Debug as necessary.
 
+***This is the end of required coding***
+
+Just revert `currentUser` and `userIsLoggedIn` to `false` and finish up the styling to make things look *FANTASTIC*. Work ahead more only as you desire but not at the cost of the work this far. 
+___
+
+
+## NEW: Pretty-fying Task Due Dates
+
+Lets tackle converting dates into a more user-friendly format. The API returns them to us in this format: `2017-12-01` year--month--day. But our users might be more familiar with a form like this: `Dec 1, 2017`. To make conversions like this we need the help of a library called dateJS. Find the `date.js` file that has been placed in your project (it should either by in your `js` folder or in the root folder of your project). Add this script to your index.html file where you have called other scripts but just ensure it is called *before* `app.js`.
+
+Now copy and paste these functions in alphabetically amidst your other function definitions:
+
+```js
+function convertDatesForUser(obj) {
+  if (obj.hasOwnProperty('tasks')) {
+    for (var i = 0; i < obj.tasks.length; i++) {
+      obj.tasks[i].dueDate = getFormattedDate(obj.tasks[i].dueDate);
+    }
+  } else if (obj.hasOwnProperty('dueDate')) {
+    obj.dueDate = getFormattedDate(obj.dueDate);
+  }
+  return obj;
+}
+
+function convertDatesForServer(obj) {
+  if (obj.hasOwnProperty('tasks')) {
+    for (var i = 0; i < obj.tasks.length; i++) {
+      obj.tasks[i].dueDate = getFormattedDate(obj.tasks[i].dueDate, 'yyyy-MM-dd');
+    }
+  } else if (obj.hasOwnProperty('dueDate')) {
+    obj.dueDate = getFormattedDate(obj.dueDate, 'yyyy-MM-dd');
+  }
+  return obj;
+}
+
+function getFormattedDate(date, format) {
+  date = Date.parse(date);
+  if (format) {
+    return date.toString(format);
+  }
+  return date.toString('MMM d, yy');
+}
+```
+
+`convertDatesForUser()` changes all the `dueDate` properties in the provided object to a user-friendly format. `convertDatesForServer` does the same but converts a provided date to the format required by our API. You don't need to edit anything in theses function. However, `getFormattedDate()` might need some customization. The last line here includes the string `'MMM d, yyyy'` which is interpretted by `.toString()` to format the `date` as a three-letter month, day number, comma, and four-digit year. If you want another format you can experiment with different code combinations as outlined [here](https://github.com/datejs/Datejs) down past midway on the page under the heading "Standard Date Time Format Specifiers".
+
+Later we'll use it when we get a single task and when we update or add a new task. For now we need to call this inside `getTasks()` so that the tasks we load are updated accordingly. So in `getTasks()` in the success function there right after you convert `data` using `$.parseJSON()` add this line:
+
+```js
+data = convertDatesForUser(data);
+```
+
+Now your dates should look fancier :)
+
 ## Filtering to a Specific Category
 
 One of the features we need to enable is the ability for the user to see all their tasks from any category (that's the default setup we just finished) as well as filter to only those in a specific category. So double-check to ensure you have the following in your category sidebar:
@@ -220,7 +274,25 @@ Let's handle storing tasks first. Declare a global variable at the top of your d
 
 Next let's ensure that task types load when the the application loads. Declare another global variable called `taskTypes`. Then create a new function amidst your other functions called `getTaskTypes()`. Inside this paste the GET request in the API Reference in order to GET a list of all task types. In the success function simply convert the incoming `data` with `$.parseJSON()` and then assign it to your `taskTypes` variable. Now just call `getTaskTypes()` inside the DRE before `initializeEventHandlers()`. Done. We're on a roll.
 
-Next we'll enable our edit task modal and load in the data for the task the user clicked.
+Next we'll enable our edit task modal and load in the data for the task the user clicked. First ensure the following:
+
+* You have an edit task button or other handle you intend to use as the trigger to allow a user to edit a task and call up the edit task modal window.
+* You have a consistent class such as `.task` and a `data-id` attribute on the task's container that is populated with the task's `id` property; something like this (the tag is less important than the attributes themselves):
+
+  ```html
+  <li data-id="{{id}}" class="task">
+    task info ...
+  </li>
+  ```
+
+* You have a modal template containing the edit task form. This form should include:
+  * a unique id or attribute on the  `form` tag itself so you can select it and list for `submit` events
+  * a `textarea` for the task `description` with a `name` attribute set to `description`
+  * an `input` for the `dueDate`with a `name` attribute set to `dueDate`
+  * a dropdown or other kind of selection list mocked up to show the task task type options with a `name` of `taskType`
+  * a dropdown or other kind of selection list mocked up to show the categories available with a `name` of `category`
+  * a checkbox for indicating the task is complete (or not) with a `name` of `complete`
+  * a submit `input` or `button` inside your form.
 
 **More coming soon!**
 
