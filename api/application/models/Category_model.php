@@ -33,13 +33,15 @@ class Category_model extends CI_Model {
             'name',
             'owner'
         );
-        $this->belongs_to = array(
+        $this->belongs_to = array();
+        $this->has_one = array(
             'owner' => 'User'
         );
-        $this->has_one = array();
         $this->has_many = array(
            'category' => 'Task'
         );
+        $this->do_not_return = array('owner');
+        $this->default_sorts = 'name';
 
         $this->service = new Service(array(
             'entity' => $this->entity,
@@ -49,7 +51,9 @@ class Category_model extends CI_Model {
             'single' => $this->single,
             'belongs_to' => $this->belongs_to,
             'has_one' => $this->has_one,
-            'has_many' => $this->has_many
+            'has_many' => $this->has_many,
+            'do_not_return' => $this->do_not_return,
+            'default_sorts' => $this->default_sorts
         ));
     }
 

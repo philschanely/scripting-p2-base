@@ -24,7 +24,7 @@ class Task_type_model extends CI_Model {
         parent::__construct();
         $this->load->database();
 
-        $this->entity = 'Task Type';
+        $this->entity = 'Task_type';
         $this->plural = 'taskTypes';
         $this->single = 'taskType';
         $this->key = 'id';
@@ -34,11 +34,12 @@ class Task_type_model extends CI_Model {
             'order',
             'alias'
         );
-        $this->belongs_to = array();
-        $this->has_one = array();
-        $this->has_many = array(
+        $this->belongs_to = array(
            'taskType' => 'Task'
         );
+        $this->has_one = array();
+        $this->has_many = array();
+        $this->default_sorts = '`order`';
 
         $this->service = new Service(array(
             'entity' => $this->entity,
@@ -48,7 +49,8 @@ class Task_type_model extends CI_Model {
             'single' => $this->single,
             'belongs_to' => $this->belongs_to,
             'has_one' => $this->has_one,
-            'has_many' => $this->has_many
+            'has_many' => $this->has_many,
+            'default_sorts' => $this->default_sorts
         ));
     }
 

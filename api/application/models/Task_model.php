@@ -36,13 +36,15 @@ class Task_model extends CI_Model {
             'category',
             'taskType'
         );
-        $this->belongs_to = array(
+        $this->belongs_to = array();
+        $this->has_one = array(
             'owner' => 'User',
             'category' => 'Category',
             'taskType' => 'Task_Type'
         );
-        $this->has_one = array();
         $this->has_many = array();
+        $this->do_not_return = array('owner');
+        $this->default_sorts = 'dueDate, taskType';
 
 
         $this->service = new Service(array(
@@ -53,7 +55,9 @@ class Task_model extends CI_Model {
             'single' => $this->single,
             'belongs_to' => $this->belongs_to,
             'has_one' => $this->has_one,
-            'has_many' => $this->has_many
+            'has_many' => $this->has_many,
+            'do_not_return' => $this->do_not_return,
+            'default_sorts' => $this->default_sorts
         ));
     }
 

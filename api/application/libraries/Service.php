@@ -19,12 +19,21 @@ class Service
     var $has_many;
     var $entries;
     var $sort_helper;
+    var $do_not_return;
+    var $default_sorts;
 
     function __construct($_params)
     {
         $this->CI =& get_instance();
         $this->CI->load->helper('sort_helper');
         $this->configure($_params);
+    }
+
+    public function add_default_sorting()
+    {
+        if (!empty($this->default_sorts)) {
+            $this->CI->db->order_by($this->default_sorts);
+        }
     }
 
     public function configure($_params)
@@ -66,8 +75,9 @@ class Service
             {
                 foreach ($results as &$result)
                 {
-                    # $this->get_related($result);
-                    $this->objectify($result);
+                    $this->get_related($result);
+                    // $this->objectify($result);
+                    $this->remove_unreturnable_props($result);
                 }
             }
         }
@@ -76,6 +86,7 @@ class Service
             $this->CI->db->where($this->key, $_key);
             $results = cfr($this->entity_view, 'row');
             $this->objectify($results);
+            $this->remove_unreturnable_props($result);
         }
 
         return $results;
@@ -148,15 +159,15 @@ class Service
     public function get_related(&$item)
     {
         // TODO: Determine if this is still needed given the objectify() method.
-        // if (!empty($this->has_one))
-        // {
-        //     foreach ($this->has_one as $one_field => $one_entity)
-        //     {
-        //         $one_model = strtolower($one_entity) . '_model';
-        //         $item->{$one_field} =
-        //             $this->CI->{$one_model}->service->get_one($item->{$one_field});
-        //     }
-        // }
+        if (!empty($this->has_one))
+        {
+            foreach ($this->has_one as $one_field => $one_entity)
+            {
+                $one_model = strtolower($one_entity) . '_model';
+                $item->{$one_field} =
+                    $this->CI->{$one_model}->service->get_one($item->{$one_field});
+            }
+        }
 
         // TODO: Build out this feature (see above)
         if (!empty($this->has_many))
@@ -251,8 +262,11 @@ class Service
     {
         if (empty($_data))
         {
+            $this->add_default_sorting();
             return FALSE;
         }
+
+        $sorts_applied = FALSE;
 
         foreach ($_data as $key=>$val)
         {
@@ -262,6 +276,7 @@ class Service
                     $this->CI->db->where($val);
                     break;
                 case 'sort':
+                    $sorts_applied = TRUE;
                     if (is_array($val))
                     {
                         foreach ($val as $sort)
@@ -277,6 +292,11 @@ class Service
                     }
                     break;
             }
+        }
+
+        if (!$sorts_applied)
+        {
+            $this->add_default_sorting();
         }
     }
 
@@ -320,6 +340,24 @@ class Service
         }
 
         return $results;
+    }
+
+    /**
+     * Method to pop undesired props from returned data set to help avoid
+     * returning extraneous or private varaibles.
+     * @param object $result The item to investigate and pop values if needed
+     */
+    public function remove_unreturnable_props(&$result) {
+      if (!empty($result) && !empty($this->do_not_return))
+      {
+        foreach ($this->do_not_return as $key)
+        {
+          if (isset($result->{$key}))
+          {
+            unset($result->{$key});
+          }
+        }
+      }
     }
 
     /**

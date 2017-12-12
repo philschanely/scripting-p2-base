@@ -19,11 +19,9 @@ class Auth_User extends CI_Controller {
         if (isset($result->users) && !empty($result->users)) {
             $auth->authenticated = true;
             $auth->user = $result->users[0];
-            unset($auth->user->password);
         } elseif (is_object($result) && !empty($result->id)) {
             $auth->authenticated = true;
             $auth->user = $result;
-            unset($auth->user->password);
         }
         echo json_encode($auth);
     }

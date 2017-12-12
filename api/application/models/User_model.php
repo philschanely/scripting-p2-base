@@ -40,6 +40,8 @@ class User_model extends CI_Model {
             'owner' => 'Task',
             'owner' => 'Category'
         );
+        $this->do_not_return = array('password');
+        $this->default_sorts = 'name';
 
         $this->service = new Service(array(
             'entity' => $this->entity,
@@ -49,7 +51,9 @@ class User_model extends CI_Model {
             'single' => $this->single,
             'belongs_to' => $this->belongs_to,
             'has_one' => $this->has_one,
-            'has_many' => $this->has_many
+            'has_many' => $this->has_many,
+            'do_not_return' => $this->do_not_return,
+            'default_sorts' => $this->default_sorts
         ));
     }
 
