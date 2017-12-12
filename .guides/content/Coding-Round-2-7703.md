@@ -218,7 +218,7 @@ While a lot of what we do with adding and editing tasks will be very similar to 
 
 Let's handle storing tasks first. Declare a global variable at the top of your document amidst the other global variables you have. Name it simple `categories` as long as this does not conflict with other variables you have in your application. Then, inside `getCategories()`, inside the success function, after you convert the incoming `data` with `$.parseJSON()` simply assign that data to your new global categories variable. Done.
 
-Next let's ensure that task types load when the the application loads. Declare another global variable called `taskTypes`. Then create a new function amidst your other functions called `getTaskTypes()`. Inside this paste the GET request in the API Reference in order to GET a list of all task types. In the success function simply convert the incoming `data` with `$.parseJSON()` and then assign it to your `taskTypes` variable. Done. We're on a roll.
+Next let's ensure that task types load when the the application loads. Declare another global variable called `taskTypes`. Then create a new function amidst your other functions called `getTaskTypes()`. Inside this paste the GET request in the API Reference in order to GET a list of all task types. In the success function simply convert the incoming `data` with `$.parseJSON()` and then assign it to your `taskTypes` variable. Now just call `getTaskTypes()` inside the DRE before `initializeEventHandlers()`. Done. We're on a roll.
 
 Next we'll enable our edit task modal and load in the data for the task the user clicked.
 
